@@ -41,6 +41,8 @@ jobs:
         run: |
           echo "Running Python script to interact with Snowflake"
           python $GITHUB_WORKSPACE/GIT_INTEGRATION/notebook_app.py
+          echo "Running Python script to interact with Snowflake"
+          
 
 
 
