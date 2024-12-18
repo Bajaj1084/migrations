@@ -5,7 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'GIT_INTEGRATION/**' 
+      - 'dbscripts/**'
+      - 'GIT_INTEGRATION/**'
 
   workflow_dispatch:
 
@@ -29,15 +30,7 @@ jobs:
         run: |
           pip install snowflake-connector-python
 
-      # Step 4: Echo the file content (for debugging)
-      - name: Show file content
-        run: |
-          echo "Listing directory contents:"
-          ls -R $GITHUB_WORKSPACE/GIT_INTEGRATION
-          echo "Displaying contents of notebook_app.py:"
-          cat $GITHUB_WORKSPACE/GIT_INTEGRATION/notebook_app.py
-
-      # Step 5: Run Python script to connect and interact with Snowflake
+      # Step 4: Run Python script to connect and interact with Snowflake
       - name: Run Python Script
         env:
           SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
@@ -45,13 +38,15 @@ jobs:
           SF_ROLE: ${{ secrets.SF_ROLE }}
           SF_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
           SF_DATABASE: ${{ secrets.SF_DATABASE }}
-          SF_PASSWORD: ${{ secrets.SF_PASSWORD }}
+          SNOWFLAKE_PASSWORD: ${{ secrets.SF_PASSWORD }}
         run: |
-          echo "Starting Python script execution..."
-          python $GITHUB_WORKSPACE/GIT_INTEGRATION/notebook_app.py
-          echo "Python script execution completed."
+          echo "Running Python script to interact with Snowflake"
+          python $GITHUB_WORKSPACE/GIT_INTEGRATION/hello.py
 
-      # Step 6: Debug Snowflake script execution (Optional)
-      - name: Check Snowflake script result
-        run: |
-          echo "If there were any outputs or logs from notebook_app.py, they will appear here."
+
+
+
+
+
+
+
