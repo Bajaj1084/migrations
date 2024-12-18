@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'GIT_INTERACTION/**' 
+      - 'GIT_INTEGRATION/**' 
 
   workflow_dispatch:
 
