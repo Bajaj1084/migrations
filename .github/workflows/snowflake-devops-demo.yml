@@ -1,37 +1,31 @@
 name: snowflake-devops-demo
 
+# Controls when the action will run. 
 on:
   push:
     branches:
       - main
     paths:
-      - 'dbscripts/**'
-      - 'GIT_INTEGRATION/**'
+      - 'migrations/**'
 
+  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
-  snowflake-cicd-showcase:
+  deploy-snowflake-changes-job:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Checkout repository
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Step 2: Setup Python environment
       - name: Use Python 3.8.x
         uses: actions/setup-python@v2.2.1
         with:
           python-version: 3.8.x
 
-      # Step 3: Install dependencies
-      - name: Install dependencies
-        run: |
-          pip install snowflake-connector-python
-
-      # Step 4: Run Python script to connect and interact with Snowflake
-      - name: Run Python Script
+      - name: Run schemachange
         env:
           SF_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
           SF_USERNAME: ${{ secrets.SF_USERNAME }}
@@ -40,13 +34,10 @@ jobs:
           SF_DATABASE: ${{ secrets.SF_DATABASE }}
           SNOWFLAKE_PASSWORD: ${{ secrets.SF_PASSWORD }}
         run: |
-          echo "Running Python script to interact with Snowflake"
-          python $GITHUB_WORKSPACE/GIT_INTEGRATION/hello.py
-
-
-
-
-
-
-
-
+          echo "GITHUB_WORKSPACE: $GITHUB_WORKSPACE"
+          python --version
+          echo "Step 1: Installing schemachange"
+          pip install schemachange
+          
+          echo "Step 2: Running schemachange"
+          schemachange -f $GITHUB_WORKSPACE/migrations -a $SF_ACCOUNT -u $SF_USERNAME -r $SF_ROLE -w $SF_WAREHOUSE -d $SF_DATABASE -c $SF_DATABASE.SCHEMACHANGE.CHANGE_HISTORY --create-change-history-table
